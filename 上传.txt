@@ -1,0 +1,152 @@
+import java.util.Random;
+
+public class diskScheduling {
+
+    private String moveDirection = "1";
+
+    static int trackNum = 200;
+    static int processNum = 20;
+    static int initialDirection = 1;
+    static int[] track = new int[processNum];
+
+    static int[] process = new int[processNum];
+
+    static int initialTrack ;
+
+    public void createProcess(){
+
+        for (int i=0;i<processNum;i++){
+
+            Random random = new Random();
+
+            int randomProcess = random.nextInt(processNum);
+            process[i] = randomProcess;
+
+        }
+    }
+
+    public void createTrack(){
+        for (int i=0;i<processNum;i++){
+
+            Random random = new Random();
+
+            int randomProcess = random.nextInt(trackNum);
+            track[i] = randomProcess;
+
+        }
+    }
+
+    public void showProcess(){
+        System.out.println("所产生的的进程为：");
+        for (int i=0;i<processNum;i++){
+            System.out.print(process[i]+"  ");
+        }
+    }
+
+    public void showTrack(){
+        System.out.println("进程所在的磁道数为：");
+        for (int i=0;i<processNum;i++){
+            System.out.print(track[i]+"  ");
+        }
+    }
+
+    public void sortFromSmallToLarge(){
+
+        for (int i=0;i<processNum-1;i++){
+            for (int j=0;j<processNum-1-i;j++){
+                if (track[j]>track[j+1]){
+                    int swap = track[j];
+                    track[j] = track[j+1];
+                    track[j+1] = swap;
+
+                    int temp = process[j];
+                    process[j] = process[j+1];
+                    process[j+1] =  temp;
+                }
+            }
+        }
+        System.out.println("输出排序后的磁道结果");
+        for (int k=0;k<processNum;k++){
+            System.out.print(track[k]+"  ");
+        }
+        System.out.println();
+        System.out.println("输出排序后的进程结果");
+        for (int k=0;k<processNum;k++){
+            System.out.print(process[k]+"  ");
+        }
+    }
+
+    public void Scan(int initialDirection){
+
+
+
+        //int recordTrackIndex = 0;
+            //磁道刚开始往增大的方向移动
+        if (moveDirection.equals("1")&&initialDirection == 1) {
+            for (int i = 0; i < processNum; i++) {
+                if (track[i] >= initialTrack) {
+                    System.out.println("磁道" + track[i] + "的进程" + process[i] + "已经执行完毕");
+                    track[i] = -1;
+                  //  recordTrackIndex = i;
+                }
+                if (i == processNum - 1) {
+                    moveDirection = "-1";
+                    for (int j = i; j >= 0; j--) {
+                        if (track[j] != -1) {
+                            System.out.println("磁道" + track[j] + "的进程" + process[j] + "已经执行完毕");
+                            track[j] = -1;
+                        }
+                    }
+                    //    moveDirection ="-1";
+                }
+            }
+        }
+
+        //磁道刚开始往减小的方向移动
+        if (moveDirection.equals("-1")&&initialDirection == -1){
+            for (int k = processNum-1;k>=0;k--){
+                if (track[k] <= initialTrack) {
+                    System.out.println("磁道" + track[k] + "的进程" + process[k] + "已经执行完毕");
+                    track[k] = -1;
+                    //  recordTrackIndex = i;
+                }
+                if (k == 0) {
+                    moveDirection = "1";
+                    for (int j = k; j <= processNum; j++) {
+                        if (track[j] != -1) {
+                            System.out.println("磁道" + track[j] + "的进程" + process[j] + "已经执行完毕");
+                            track[j] = -1;
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+
+    }
+
+    public static void main(String[] args) {
+
+
+        diskScheduling diskScheduling = new diskScheduling();
+
+        initialTrack = 100;//当前初始磁道
+        diskScheduling.createProcess();
+        diskScheduling.createTrack();
+        System.out.println("输出随机产生的进程");
+        diskScheduling.showProcess();
+        System.out.println();
+       // System.out.println("输出随机产生的磁道");
+        diskScheduling.showTrack();
+        System.out.println();
+
+        diskScheduling.sortFromSmallToLarge();
+
+        System.out.println();
+        System.out.println("电梯SCAN算法执行结果:");
+        diskScheduling.Scan(initialDirection);
+
+    }
+}
